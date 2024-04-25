@@ -1,9 +1,10 @@
 name: Deploy
 
 on:
-  push:
-    branches:
-    - main
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #   - main
 
 env:
   CARGO_TERM_COLOR: always
@@ -12,11 +13,12 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     steps:
       - name: Install Dependencies
+        if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update \
           && sudo apt-get install -y g++ pkg-config libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
@@ -30,10 +32,14 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-build-stable-${{ hashFiles('**/Cargo.toml') }}
+      - name: Clippy
+        run: cargo clippy
+      - name: Run Tests
+        run: cargo test
       - name: Build Release
         run: cargo build --release
       - uses: actions/upload-artifact@v4
         with:
-          name: "bevy-example-release"
-          path: "./target/release/bevy-example"
+          name: "bevy-example-release-${{ runner.os }}"
+          path: "./target/release/bevy-example*"
       
