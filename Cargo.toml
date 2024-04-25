@@ -1,0 +1,12 @@
+[package]
+name = "bevy-example"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = { version = "0.13.2", default-features = false, features = [
+	"wayland",
+	"bevy_render",
+	"bevy_asset",
+	"bevy_sprite",
+] }
