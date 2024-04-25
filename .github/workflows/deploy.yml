@@ -21,10 +21,6 @@ jobs:
           sudo apt-get update \
           && sudo apt-get install -y g++ pkg-config libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
       - uses: actions/checkout@v4
-      - uses: actions/upload-artifact@v4
-        with:
-          name: "bevy-example-release"
-          path: "./target/release/bevy-example"
       - uses: actions/cache@v4
         with:
           path: |
@@ -36,4 +32,8 @@ jobs:
           key: ${{ runner.os }}-cargo-build-stable-${{ hashFiles('**/Cargo.toml') }}
       - name: Build Release
         run: cargo build --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "bevy-example-release"
+          path: "./target/release/bevy-example"
       
